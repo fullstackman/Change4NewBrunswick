@@ -104,12 +104,12 @@ $(document).ready(function() {
   $("#header").sticky({topSpacing:0, zIndex: '50'});
 
   // Counting numbers
-
+  /*
   $('[data-toggle="counter-up"]').counterUp({
     delay: 10,
     time: 1000
   });
-
+  */
   // Tooltip & popovers
   $('[data-toggle="tooltip"]').tooltip();
   $('[data-toggle="popover"]').popover();
@@ -124,11 +124,13 @@ $(document).ready(function() {
   });
 
   // jQuery counterUp
+  /*
   if(jQuery().counterUp) {
     $('[data-counter-up]').counterUp({
       delay: 20,
     });
   }
+  */
 
   /*Scroll Top link
   $(window).scroll(function(){
