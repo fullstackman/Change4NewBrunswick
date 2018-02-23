@@ -11,6 +11,7 @@ $(document).ready(function() {
         return $(this.oldContainer).animate({ opacity: 0 }).promise();
       },
       fadeIn: function() {
+        window.scrollTo(0, 0);
         var _this = this;
         var $el = $(this.newContainer);
         $(this.oldContainer).hide();
