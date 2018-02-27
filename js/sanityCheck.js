@@ -1,7 +1,7 @@
 $(document).ready(function() {
 	let dynamicContent = document.querySelector("main div[id^='anymod-']");
-  if(dynamicContent == null && dynamicContent == undefined){
-    console.log("\tFailed to find target content.");
+  if(dynamicContent == null || dynamicContent == undefined){
+    console.log("\tFailed to find target container.");
     return;
   }
 	if(dynamicContent.innerText.length < 1){
@@ -9,6 +9,9 @@ $(document).ready(function() {
 		dynamicContent.classList += " text-center";
     console.log("\tUpdated the output.");
 	}
+  else{
+    console.log("\tDynamic content loaded successfully!");
+  }
 });
 
 function loadAnymod(){
