@@ -10,7 +10,6 @@ $(document).ready(function() {
 });
 
 function checkAnymodSuccess(dynamicContent) {
-  alert("Hey now, hey now!");
   if(dynamicContent.innerText.length < 1){
     dynamicContent.innerText = "We're having trouble loading this content. Please refresh the page.";
     dynamicContent.classList += " text-center";
