@@ -55,7 +55,7 @@
 						<h1>Contribute</h1>
 						<p>We appreciate your interest in helping our campaign realize the change we want to see in New Brunswick Public Schools.</p>
 						<script src="https://checkout.stripe.com/checkout.js"></script>
-						<form>
+						<form id="contributionForm">
 							<h3>I would like to donate:</h3>
 							<span>$ </span><input id="shmoney" type="number" name="donation">
 							<button id="customButton" class="btn-outline-primary">Enter Payment Details</button>
@@ -65,15 +65,23 @@
 						function alertContents() {
 						  if (httpRequest.readyState === XMLHttpRequest.DONE) {
 						    if (httpRequest.status === 200) {
-						      var response = JSON.parse(httpRequest.responseText);
-						      console.log(response);
+								var response = httpRequest.responseText;
+								var formArea = document.getElementById("contributionForm");
+								if(formArea != null && formArea != undefined){
+									formArea.innerHTML = response;
+									console.log("Transaction was a success! 👏")
+								}
+								else{
+									console.log("Unable to update the page. This is what the server responded with:");
+									console.log(response);
+								}
 						    } else {
-						      console.log('There was a problem making the request.');
+							    console.log('There was a problem making the request.');
 						    }
 						  }
 						}
 						var handler = StripeCheckout.configure({
-						  key: 'pk_test_FbQmHu7iqLND95HOy5w62hL5',
+						  key: 'pk_live_Wi69HdA8rdqC6EbWuZKIUNDM',
 						  image: 'https://changefornewbrunswick.com/img/logo.png',
 						  locale: 'auto',
 						  billingAddress: true,
@@ -88,7 +96,7 @@
 						    console.log("\tSubmitting data to the server...");
 						    httpRequest = new XMLHttpRequest();
 						    httpRequest.onreadystatechange = alertContents;
-						    httpRequest.open('POST', 'http://localhost:4567/charge');
+						    httpRequest.open('POST', 'https://serious-donations.herokuapp.com/charge');
 						    httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 						    let paymentDeets =
 							    `stripeToken=${token.id}&stripeTokenType=card&stripeEmail=${token.email}&donation=${donation}`;
