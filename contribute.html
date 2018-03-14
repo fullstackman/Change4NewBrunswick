@@ -55,12 +55,102 @@
 						<h1>Contribute</h1>
 						<p>We appreciate your interest in helping our campaign realize the change we want to see in New Brunswick Public Schools.</p>
 						<script src="https://checkout.stripe.com/checkout.js"></script>
-						<form id="contributionForm" style="margin: 15px 0;">
+						<form id="contributionForm" style="margin: 15px 0;" onchange="checkCompleteness()" autocomplete="off">
 							<p style="font-size: 24px; font-weight: bold">I would like to donate:</p>
 							<span>$ </span><input id="shmoney" type="number" name="donation" style="width:75px">
-							<button id="customButton" class="btn-outline-primary">Enter Payment Details</button>
+							<br>
+							<fieldset id="empQuestion">
+								<label><input id="xFactor" type="radio" name="employment" value="no">I am currently unemployed.</label>
+								<br>
+								<label><input type="radio" name="employment" value="yes">I currently have a job or am self-employed.</label>
+							</fieldset>
+							<br>
+							<fieldset id="empDetails" disabled>
+								<p style="font-size: 16px; font-weight: bold">Employment Details</p>
+								<label>Job Title:
+									<br>
+									<input id="jobTitle" type="text" name="occupation" placeholder="Worker Bee"></label>
+								<br>
+								<label>Employer:
+									<br>
+									<input id="employerName" type="text" name="occupation" placeholder="Company Inc."></label>
+								<br>
+								<label>Employer Address:
+									<br>
+									<input id="employerAddress" type="text" name="occupation" placeholder="Street, City, State, Zipcode"></label>
+								<br>
+							</fieldset>
+							<button id="customButton" class="btn-outline-secondary" disabled="true">Enter Payment Details</button>
 						</form>
 						<script>
+							function checkCompleteness(){
+								var moola = document.getElementById("shmoney");
+								var empToggle = document.getElementById("xFactor");
+								var deetsForm = document.getElementById("empDetails");
+								var finalButton = document.getElementById("customButton");
+								var allowPayment = false;
+								if(moola.value < 0.01){
+									finalButton.disabled = true;
+									moola.style.borderColor="red";
+									allowPayment = false;
+								}
+								else{
+									finalButton.disabled = false;
+									moola.style.borderColor="initial";
+									allowPayment = true;
+								}
+								var leTitle = document.getElementById("jobTitle");
+								var leName = document.getElementById("employerName");
+								var addr = document.getElementById("employerAddress");
+								if(empToggle.checked === true){
+									deetsForm.disabled=true;
+									leTitle.style.borderColor="initial";
+									leName.style.borderColor="initial";
+									addr.style.borderColor="initial";
+									allowPayment = allowPayment && true;
+									leTitle.value=null;
+									leName.value=null;
+									addr.value=null;
+								}
+								else{
+									deetsForm.disabled=false;
+									// check all of these additional fields
+									if(leTitle.value > ""){
+										leTitle.style.borderColor="initial";
+										allowPayment = allowPayment && true;
+									}
+									else{
+										leTitle.style.borderColor="red";
+										allowPayment = allowPayment && false;
+									}
+									if(leName.value > ""){
+										leName.style.borderColor="initial";
+										allowPayment = allowPayment && true;
+									}
+									else{
+										leName.style.borderColor="red";
+										allowPayment = allowPayment && false;
+									}
+									if(addr.value > ""){
+										addr.style.borderColor="initial";
+										allowPayment = allowPayment && true;
+									}
+									else{
+										addr.style.borderColor="red";
+										allowPayment = allowPayment && false;
+									}
+								}
+								if(allowPayment){
+									finalButton.disabled=false;
+									finalButton.classList.remove("btn-outline-secondary");
+									finalButton.classList.add("btn-outline-primary");
+								}
+								else{
+									finalButton.disabled=true;
+									finalButton.classList.remove("btn-outline-primary");
+									finalButton.classList.add("btn-outline-secondary");
+								}
+							}
 							function alertContents() {
 							  if (httpRequest.readyState === XMLHttpRequest.DONE) {
 							    if (httpRequest.status === 200) {
@@ -80,38 +170,45 @@
 							  }
 							}
 							var handler = StripeCheckout.configure({
-							  key: 'pk_live_Wi69HdA8rdqC6EbWuZKIUNDM',
-							  image: 'https://changefornewbrunswick.com/img/logo.png',
-							  locale: 'auto',
-							  billingAddress: true,
-							  zipCode: true,
-							  allowRememberMe: false,
-							  panelLabel: 'Make donation of ',
-							  token: function(token) {
-							    // You can access the token ID with `token.id`.
-							    // Get the token ID to your server-side code for use.
-							    let donation = shmoney.value * 100;
-							    console.log(token);
-							    console.log("\tSubmitting data to the server...");
-							    httpRequest = new XMLHttpRequest();
-							    httpRequest.onreadystatechange = alertContents;
-							    httpRequest.open('POST', 'https://serious-donations.herokuapp.com/charge');
-							    httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-							    let paymentDeets =
-								    `stripeToken=${token.id}&stripeTokenType=card&stripeEmail=${token.email}&donation=${donation}`;
-							    httpRequest.send(paymentDeets);
-							  }
+								key: 'pk_live_Wi69HdA8rdqC6EbWuZKIUNDM',
+								image: 'https://changefornewbrunswick.com/img/logo.png',
+								locale: 'auto',
+								billingAddress: true,
+								zipCode: true,
+								allowRememberMe: false,
+								panelLabel: 'Make donation of ',
+								token: function(token) {
+									var donation = shmoney.value * 100;
+									var job = document.getElementById("jobTitle").value || "Not applicable" ;
+									var boss = document.getElementById("employerName").value || "Not applicable";
+									var workplace = document.getElementById("employerAddress").value || "Not applicable";
+									console.log(token);
+									console.log("\tSubmitting data to the server...");
+									httpRequest = new XMLHttpRequest();
+									httpRequest.onreadystatechange = alertContents;
+									httpRequest.open('POST', 'https://serious-donations.herokuapp.com/charge');
+									httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+									var paymentDeets =
+										"stripeToken="+token.id
+										+"&stripeTokenType=card"
+										+"&stripeEmail="+token.email
+										+"&donation="+donation
+										+"&job="+job
+										+"&boss="+boss
+										+"&workplace="+workplace;
+									httpRequest.send(paymentDeets);
+								}
 							});
 
 							document.getElementById('customButton').addEventListener('click', function(e) {
-							  // Open Checkout with further options:
-							  var shmoney = document.getElementById("shmoney");
-							  handler.open({
-							    name: 'Change for New Brunswick',
-							    description: 'Campaign contribution',
-							    amount: shmoney.value * 100
-							  });
-							  e.preventDefault();
+								// Open Checkout with further options:
+								var shmoney = document.getElementById("shmoney");
+								handler.open({
+									name: 'Change for New Brunswick',
+									description: 'Campaign contribution',
+									amount: shmoney.value * 100
+								});
+								e.preventDefault();
 							});
 
 							// Close Checkout on page navigation:
