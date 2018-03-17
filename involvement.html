@@ -52,7 +52,101 @@
 			<div class="row">
 				<div class="col-lg-12">
 					<h1>Get Involved</h1>
-					<p>Check here again soon to learn how you can join the cause. For now, you can follow us on social media.</p>
+					<p>Would you like to get involved with our campaign? Please fill out the form below and let us know what you are interested in doing.</p>
+					<div>
+						<form id="involvementForm" style="margin: 15px 0;" onchange="checkCompleteness(this)" autocomplete="off">
+							<p style="font-size: 24px; font-weight: bold">Involvement Signup</p>
+							<fieldset id="basics">
+								<label>Name:
+									<br>
+									<input id="leName" type="text" name="basicInfo" placeholder="First Name, Last Name" required autofocus onchange="validityCheck(this)"></label>
+								<br>
+								<label>E-mail:
+									<br>
+									<input id="leMail" type="email" name="basicInfo" placeholder="address@example.com" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,8}$" onchange="validityCheck(this)"></label>
+								<br>
+								<label>Phone Number:
+									<br>
+									<input id="leNumber" type="tel" name="basicInfo" placeholder="000-123-4567" pattern="([0-9._%+-]){10,16}" onchange="validityCheck(this)"></label>
+								<br>
+								<label>Comments:
+									<br>
+									<textarea id="leComments" width="200px" name="basicInfo" placeholder="I just wanted to tell you something..."></textarea></label>
+								<br>
+							</fieldset>
+							<fieldset id="activities">
+								<p style="font-size: 16px; font-weight: bold">Ways to help bring change to New Brunswick (choose 1 or more)</p>
+								<label><input id="xFactor" type="checkbox" name="activity" value="will vote">I can vote for Nancy and Jad on April 17.</label>
+								<br>
+								<label><input type="checkbox" name="activity" value="knock on doors">I can knock on doors or hand out flyers for the campaign.</label>
+								<br>
+								<label><input type="checkbox" name="activity" value="make calls">I can call voters on the phone to remind them about the election.</label>
+								<br>
+								<label><input type="checkbox" name="activity" value="host event">I can host an event for the campaign at my home or business.</label>
+								<br>
+								<label><input type="checkbox" name="activity" value="other way">I can help in some other way. Please contact me.</label>
+							</fieldset>
+							<input id="customButton" type="submit" class="btn-outline-secondary" formenctype="multipart/form-data" disabled="true">
+						</form>
+						<script>
+							function validityCheck(theInput){
+								if(theInput.validity.valid == false){
+									theInput.style.borderColor="red";
+								}
+								else{
+									theInput.style.borderColor="initial";
+								}
+							}
+							function checkCompleteness(wholeForm){
+								var finalButton = document.getElementById("customButton");
+								if(wholeForm.checkValidity() == true){
+									finalButton.disabled=false;
+									finalButton.classList.remove("btn-outline-secondary");
+									finalButton.classList.add("btn-outline-primary");
+								}
+								else{
+									finalButton.disabled=true;
+									finalButton.classList.remove("btn-outline-primary");
+									finalButton.classList.add("btn-outline-secondary");
+								}
+							}
+							function alertContents() {
+							  if (httpRequest.readyState === XMLHttpRequest.DONE) {
+							    if (httpRequest.status === 200) {
+									var response = httpRequest.responseText;
+									if(formArea != null && formArea != undefined){
+										formArea.innerHTML = response;
+										console.log("E-mail was sent! 👏")
+									}
+									else{
+										console.log("Unable to update the page. This is what the server responded with:");
+										console.log(response);
+									}
+							    } else {
+								    console.log('\tThere was a problem making the request.');
+								    console.log(response);
+							    }
+							  }
+							}
+							document.getElementById('customButton').addEventListener('click', function(e) {
+								console.log("\tSubmitting data to the server...");
+								var theForm = document.getElementById("involvementForm");
+								var z = theForm.elements;
+								httpRequest = new XMLHttpRequest();
+								httpRequest.onreadystatechange = alertContents();
+								//https://serious-donations.herokuapp.com
+								httpRequest.open('POST', 'http://localhost:5000/notify');
+								httpRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+								var content =
+									"name="+ z.leName.value
+									+"&email="+z.leMail.value
+									+"&phone="+z.leNumber.value
+									+"&comments="+z.leComments.value;
+								httpRequest.send(content);
+								e.preventDefault();
+							});
+						</script>
+					</div>
 					<div style="margin-top: 4vh;">
 						<a href="https://www.facebook.com/changefornewbrunswick" target="_blank" style="background: steelblue; padding: 38px 30px 17px 30px;"><i class="fa fa-facebook" style="color: white; font-size: 50px;"></i></a>
 					</div>

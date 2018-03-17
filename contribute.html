@@ -6,7 +6,7 @@
 		<meta content="New Brunswick Board of Education, Nancy Love, Jad Kaado" name="keywords">
 		<meta name="theme-color" content="#4682b4"/>
 		<meta content="Nancy Love and Jad Kaado are running for New Brunswick Board of Education. Learn how your donation can impact their campaign to improve the New Brunswick Public School system." name="description">
-		<title>✊ Love & Kaado for Board of Ed | Contribute</title>
+		<title>✊ Love & Kaado for Board of Ed | Donate</title>
 
 		<meta name="twitter:card" content="summary" />
 		<meta name="twitter:site" content="@nancyqlove" />
@@ -52,21 +52,16 @@
 			<div>
 				<div class="row">
 					<div class="col-lg-12">
-						<h1>Contribute</h1>
-						<p>We appreciate your interest in helping our campaign realize the change we want to see in New Brunswick Public Schools.</p>
+						<h1>Donate</h1>
+						<p>Our campaign is a grassroots effort driven by volunteers who want to make a positive change in our city.  We count on donations from supporters like you to pay for the printing and mailing of flyers, and to ensure we have enough resources to support our election day volunteers so that they can ensure that everyone makes it to the polls and that their votes are properly counted in this important election.  Every little bit helps, so please support our campaign with whatever amount you can.</p>
 						<script src="https://checkout.stripe.com/checkout.js"></script>
 						<form id="contributionForm" style="margin: 15px 0;" onchange="checkCompleteness()" autocomplete="off">
 							<p style="font-size: 24px; font-weight: bold">I would like to donate:</p>
 							<span>$ </span><input id="shmoney" type="number" name="donation" style="width:75px">
+							<button id="customButton" class="btn-outline-secondary" disabled="true">Enter Payment Details</button>
 							<br>
-							<fieldset id="empQuestion">
-								<label><input id="xFactor" type="radio" name="employment" value="no">I am currently unemployed.</label>
-								<br>
-								<label><input type="radio" name="employment" value="yes">I currently have a job or am self-employed.</label>
-							</fieldset>
-							<br>
-							<fieldset id="empDetails" disabled>
-								<p style="font-size: 16px; font-weight: bold">Employment Details</p>
+							<fieldset id="empDetails" disabled style="display:none;">
+								<p style="font-size: 16px; font-weight: bold">For donations of $300 or more, we need to collect information about your occupation.</p>
 								<label>Job Title:
 									<br>
 									<input id="jobTitle" type="text" name="occupation" placeholder="Worker Bee"></label>
@@ -80,12 +75,11 @@
 									<input id="employerAddress" type="text" name="occupation" placeholder="Street, City, State, Zipcode"></label>
 								<br>
 							</fieldset>
-							<button id="customButton" class="btn-outline-secondary" disabled="true">Enter Payment Details</button>
 						</form>
 						<script>
 							function checkCompleteness(){
 								var moola = document.getElementById("shmoney");
-								var empToggle = document.getElementById("xFactor");
+								//var empToggle = document.getElementById("xFactor");
 								var deetsForm = document.getElementById("empDetails");
 								var finalButton = document.getElementById("customButton");
 								var allowPayment = false;
@@ -102,8 +96,9 @@
 								var leTitle = document.getElementById("jobTitle");
 								var leName = document.getElementById("employerName");
 								var addr = document.getElementById("employerAddress");
-								if(empToggle.checked === true){
+								if(moola.value < 299.99){ //&& empToggle.checked === true
 									deetsForm.disabled=true;
+									deetsForm.style.display="none";
 									leTitle.style.borderColor="initial";
 									leName.style.borderColor="initial";
 									addr.style.borderColor="initial";
@@ -114,6 +109,7 @@
 								}
 								else{
 									deetsForm.disabled=false;
+									deetsForm.style.display="initial";
 									// check all of these additional fields
 									if(leTitle.value > ""){
 										leTitle.style.borderColor="initial";
